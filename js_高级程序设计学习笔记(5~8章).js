@@ -269,15 +269,269 @@
 			m:多行模式
 
 	五.Function类型
+		1.函数是对象，函数名类似指针，用来访问对象。
+			function sum(num1,num2){
+				return num1 +num2;
+			}//函数声明语法定义函数
+
+			var sum = function(num1,num2){
+				return num1 +num2;
+			}//函数表达式语法定义函数
+
+			var sum = function sum(num1,num2){
+				return num1 +num2;
+			}//非主流定义法  在Safari中会报错
+
+			调用sum(),相当于调用函数对象，调用sum,相当于访问相对应的指针
+			function sum(num1,num2){
+				return num1 + num2;
+			}；
+			alert(sum(10,10));//20
+			var another = sum ;//将sum指针赋值给another  这样一来another也是指向函数的指针
+			alert(another(10,10));//20
+			sum = null;//sum变化  但不影响another
+			alert(another(10,10));//20
+
+		2.没有重载（重点）
+			function addSomeNumber(num){
+				return num + 100;
+			}
+
+			function addSomeNumber(num){
+				return num + 200;
+			}
+			var result = addSomeNumber(100);//300  下面的函数覆盖上面的函数  变量addSomeNumber被覆盖
+
+		3.函数声明和函数表达式
+			解析顺序不一样：
+				函数声明：解析器会率先读取函数声明，并且在执行任何代码之前都能使用
+				函数表达式：必须等到解析器执行到那行代码才会执行
+
+				alert(sum(10,10));//20
+				function sum(num1,num2){//JS引擎把函数声明提升到了顶部
+					return num1 + num2;
+				}
 
 
+				alert(sum(10,10));//unexpected identifier  意外的标识符
+				var sun = function(num1,num2){// 在执行到这段之前  sum中没有保存有对函数的引用
+					return num1 + num2;
+				}
 
+		4.作为值得函数
+			函数名是变量，所以函数也可以作为值来使用
 
+			把一个函数传递给另一个函数：
+				function callSomeFunction(someFunction,someArgument){
+					return someFunction(someArgument);
+				}
+				function add10(num){
+					return num + 10;
+				}
+				var result1 = callSomeFunction(add10,10);
+				alert(result1);//20
+				function getGreeting(name){
+					return "hello, " + name;
+				}
+				var result2 = callSomeFunction(getGreeting,"Nicholas");
+				alert(result2);//"hello,Nicholas"
 
+			从一个函数中返回另一个函数：
+				function creatComparisonFunction(propertyName){
+					return function(object1,object2){
+						var value1 = object1[propertyName];
+						var value2 = object2[propertyName];
+						if (value1 < value2) {
+							return -1;
+						}else if(value1 > value2){
+							return 1;
+						}else{
+							return 0;
+						}
+					}
+				}
+				var date = [{name: "Zachary",age:28},{name:"Nicholas",age:29}];
+				data.sort(creatComparisonFunction("name"));
+				alert(data[0].name);//Nichalas
+				data.sort(creatComparisonFunction("age"));
+				alert(data[0].name);//Zachary
 
+		5.函数内部属性
+			arguments  :用来保存函数参数。（前面有提 18.函数 那里）
+				arguments.callee  该属性是个指针，指向拥有这个arguments对象的函数
+
+				不用arguments.callee属性：
+					function factorial(num){
+						if (num <= 1) {
+							return 1;
+						}else{
+							return num * factorial(num - 1);
+						}
+					}//此函数存在耦合性 可以改写成下面的形式
+
+				使用callee属性：
+					function factorial(num){
+						if (num <= 1) {
+							return 1;
+						}else{
+							return num * arguments.callee(num - 1);
+						}
+					}//无论引用函数名时使用的是什么名字，都可以保证正常的递归调用
+					var trueFactorial = factorial;//trueFactorial获得了函数的指针
+					factorial = function(){
+						return 0;//此时factorial成了返回0 的函数，不影响trueFactorial
+					}
+					alert(trueFactorial(5));//120
+					alert(factorial(5));//0
+
+			this对象:引用的是函数执行的环境对象，当在全局作用域中调用函数，this对象引用的就是window
+				window.color = "red";
+				var o = {color:"blue"};
+				function sayColor(){
+					alert(this.color);
+				}
+				sayColor();//"red"
+				o.sayColor = sayColor;
+				o.sayColor();//"blue"
+
+			函数的名字仅仅是一个包含指针的变量而已
+
+			函数的caller:不能为这个属性赋值，会报错
+				function outer(){
+					inner();
+				}
+				function inner(){
+					alert(inner.caller);//caller属性 指向拥有这个arguments对象的函数 即outer（）
+				}
+				outer();//function outer(){inner();}
+
+		6.函数属性和方法
+			每个函数都包含两个属性:length/prototype
+				length:长度
+				prototype属性非常多，第六章详细讲解。
+
+			每个函数都有两个非继承而来的方法：apply()/call()
+				这两个函数实际上等于设置函数体内this对象的值,扩充函数赖以运行的作用域
+
+				apply():接受两个参数：运行函数的作用域和参数数组  第二个参数可以使数组实例 也可以是arguments对象
+					function sum(num1,num2){
+						return num1 + num2;
+					}
+					function sum1(num1,num2){
+						return sum.apply(this,arguments);//传入arguments对象 此时this是在全局作用域中调用
+					}
+					function sum2(num1,num2){
+						return sum.apply(this,[num1,num2]);//传入数组
+					}
+					alert(sum1(10, 10));//20
+					alert(sum2(10, 10));//20
+				在严格模式下，未指定环境对象而调用函数，this值不会转型为window。除非明确声明调价到或者调用某个函数的apply()或call(),否则this是undifined。
+
+				call():跟apply()相同，唯一不同在于接收参数的方式
+					function sum(num1,num2){
+						return num1 + num2;
+					}
+					function sum1(num1,num2){
+						return sum.call(this,num1,num2);
+					}
+					alert(sum1(10, 10));//20
+
+				扩充函数赖以运行的作用域的例子：
+					window.color = "red";
+					var o = {color:"blue"};
+					function sayColor(){
+						alert(this.color);
+					}
+					sayColor();//red
+					sayColor.call(this);//red
+					sayColor.call(window);//red
+					sayColor.call(o);//blue  this对象指向了o
+
+			bind():创建一个函数的实例，其this值会被绑定到传给bind()函数的值。 兼容性IE9+
+				window.color = "red";
+				var o = {color:"blue"};
+				function sayColor(){
+					alert(this.color);
+				}
+				var objectSayColor = sayColor.bind(o);//此时 sayColor里this的值为o
+				objectSayColor();//blue
+
+	六.基本包装类型
+		substring() 方法用于提取字符串中介于两个指定下标之间的字符。
+		基本包装类型：  string  boolean number 三种类型
+
+		引用类型和基本类型的区别在于对象的生存期。
+		引用类型的对象，在执行流离开当前作用域之前一直保存在内存中
+		基本包装类型的对象，只存在于一行代码的执行瞬间，然后立即被销毁。
+		所以基本包装类型不能再运行时添加属性和方法
+
+		1.boolean类型
+			boolean表达式中所有对象都会被转化true  总之非常绕  建议永远不要使用布尔对象
+
+		2.number类型：
+			
 
 
 				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
