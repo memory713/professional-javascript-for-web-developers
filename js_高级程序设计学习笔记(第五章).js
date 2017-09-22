@@ -468,7 +468,104 @@
 		1.boolean类型
 			boolean表达式中所有对象都会被转化true  总之非常绕  建议永远不要使用布尔对象
 
-		2.number类型：
+		2.number类型
+			toString():
+				var num = 10;
+				alert(num.toString());//"10"
+				alert(num.toString(2));//"1010"
+				alert(num.toString(8));//"12"
+				alert(num.toString(10));//"10"
+				alert(num.toString(16));//"a"
+
+			toFixed(): IE8之前不能精确表达[0.5~0.94]之间的四舍五入
+				var num = 10;
+				alert(num.toFixed(2));//"10.00"  精确到几位小数
+
+			toExponential():
+				var num = 99;
+				alert(num.toExponential(1));//"1e+2"
+				alert(num.toExponential(2));//"99"
+				alert(num.toExponential(3));//"99.0"
+
+		3.String类型
+			字符方法：
+				charAt()
+				charCodeAt()  字符编码
+					var stringValue = "hello world";
+					alert(stringValue.charAt(1));//"e"
+					alert(stringValue.charCodeAt(1));//"101"
+					alert(stringValue[1]);//"e" 方括号表示法 IE8+兼容
+
+			字符串操作方法：
+				concat():字符串拼接
+					var stringValue = "hello ";
+					var result = stringValue.concat("world");
+					alert(result);//"hello world"
+					alert(stringValue);//"hello"
+
+			基于子字符串创建新字符串的方法：
+				slice():第二个参数指定子字符串最后一个字符后面的位置
+				substr():第二个参数指定返回的字符个数
+				substring():第二个参数指定子字符串最后一个字符后面的位置
+				返回子字符串，对原始字符串没有任何影响。接收一到两个参数。一个参数时，则字符串末尾作为结束位置。两个参数时，第一个参数指定开始位置
+					var stringValue = "hello world";
+					alert(stringValue.slice(3));//"lo world"
+					alert(stringValue.substring(3));//"lo world"
+					alert(stringValue.sunstr(3));//"lo world"
+					alert(stringValue.slice(3,7));//"lo w"
+					alert(stringValue.substring(3,7));//"lo w"
+					alert(stringValue.substr(3,7));//"lo worl"
+
+				如果传入的参数有负值：
+					var stringValue = "hello world";
+					alert(stringValue.slice(-3));//"rld"  字符串长度加参数 11 + -3 = 8 相当于slice（8）
+					alert(stringValue.substring(-3));//"hello world"	将-3转化成0  substring（0）
+					alert(stringValue.sunstr(-3));//"rld"	字符串长度加参数 11 + -3 = 8 相当于slice（8）
+					alert(stringValue.slice(3,-4));//"lo w"	字符串长度加参数 11 + -7 = 7 相当于slice（3,7）
+					alert(stringValue.substring(3,-4));//"lel"	将-4转化成0  substring（3,0）
+					alert(stringValue.substr(3,-4));//""空字符串	将-4转化成0  substr（3,0）返回空字符串
+
+			字符串位置方法：
+				indexOf()	lastIndexOf()  返回子字符串的位置  若没找到  返回-1
+					var stringValue = "hello world";
+					alert(stringValue.indexOf("o"));//4  返回第一个符合的字符串位置
+					alert(stringValue.lastIndexOf("o"));//7  返回最后一个符合的字符串位置
+
+					var stringValue = "hello world";
+					alert(stringValue.indexOf("o"，6));//7  从6位置向后找  
+					alert(stringValue.lastIndexOf("o",6));//4  从6位置向前找
+				实例：通过循环找到所有匹配的子字符串
+					var  stringValue = "ldjehoif feoqfofjkndf f efqwofjoeiwqfjka df  foweqfjklsdajfoewjfosaff";
+					var positions = new Array();
+					var pos = stringValue.indexOf("e");
+					while(pos > -1){
+						positions.push(pos);
+						pos = stringValue.indexOf("e", pos+1);
+					}
+					document.getElementsByTagName("body")[0].innerHTML = positions;//3,10,24,32,48,60
+
+			trim():创建一个字符串的副本，删除前置及后缀的所有空格，并返回结果 兼容性IE9+
+				var  stringValue = "   fjif  f jaofjdoa f    ";
+				var trimmedStringValue = stringValue.trim();
+				alert(stringValue);//"   fjif  f jaofjdoa f    "
+				alert(trimmedStringValue);//"fjif  f jaofjdoa f"
+
+				trimLeft():删除字符串开头空格  IE不支持
+				trimRight():删除字符串末尾空格  IE不支持
+
+			字符串大小写转换方法：
+				常用：
+					toLowerCase()	小写			
+					toUpperCase()	大写
+				针对特定地区：
+					toLocaleLowerCase()
+					toLocaleUpperCase()
+
+
+
+
+				
+
 			
 
 
