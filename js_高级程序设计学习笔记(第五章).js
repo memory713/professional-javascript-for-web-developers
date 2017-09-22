@@ -561,74 +561,102 @@
 					toLocaleLowerCase()
 					toLocaleUpperCase()
 
-
-
-
-				
-
-			
-
-
-				
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			字符串模式匹配方法：
+				match():本质上等同于调用RegExp.exec()方法相同。接收一个参数，正则表达式或者正则对象
+					var text = "cat,bat,sat,fat";
+					var pattern = /.at/;
+					var matches = text.march(pattern);//与pattern.exec(text)相同
+					alert(matches.index);//0
+					alert(matches[0]);//"cat"
+					alert(pattern.lastIndex);//0
+
+				search():参数与match()参数相同,返回字符串中第一个匹配项的索引，若没有，返回-1，从头向后查找
+					var text = "cat,bat,sat,fat";
+					var pos = text.search(/at/);
+					alert(pos);//1
+
+				replace():替换子字符串。接收两个参数，第一个参数可以是正则或者字符串，第二个可以是字符串或者一个函数。
+
+					如果第一个参数是字符串，那么只会替换第一个子字符串，要想替换所有，就要提供一个正则，全局g标志
+						var text = "cat,bat,sat,fat";
+						var resule = text.replace("at","ond");
+						alert(result);//"cond,bat,sat,fat"
+						var result = text.replace(/at/g,"ond");
+						alert(result);//"cond,bond,sond,fond"
+
+					如果第二个参数是字符串，可以使用特殊的字符序列，将正则得到的值插入
+						var text = "cat,bat,sat,fat";
+						var resule = text.replace(/(.at)/g,"word($1)");
+						alert(result);//"word(cat),word(bat),word(sat),word(fat)"
+
+						字符序列				替换文本
+						$$						$
+						$&						匹配整个模式的子字符串。与RegExp.lastMatch的值相同
+						$'						匹配的子字符串之前的子字符串。与RegExp.leftContext的值相同					'
+						$`						匹配的子字符串之后的子字符串。与RegExp.rightContext的值相同					`
+						$n 						匹配第n个捕获组的子字符串，其中n等于0~9，例如$1是匹配第一个捕获组的子字符串
+						$nn 					匹配第nn个捕获组的子字符串，其中n等于01~99，例如$01是匹配第一个捕获组的子字符串								
+
+					如果第二个参数是函数,在只有一个捕获组的情况下，会向函数传递三个参数：模式的匹配项、模式匹配项在字符串中的位置、原始字符串
+					function htmlEscape(text){
+						return text.replace(/[<>"&]/g,function(match,pos,originalText){
+							switch(match){
+								case "<":
+									return "&lt;";
+								case ">":
+									return "&gt;";
+								case "&":
+									return "&amp;";
+								case "\"":
+									return "&quot;";
+							}
+						});
+					}
+					alert(htmlEscape("<p class=\"greeting\">hello world!</p>"));//&lt;p class=&quot;greeting&quot;&gt;hello world!&lt;/p&gt;
+
+				split():基于指定的分隔符将一个字符串分隔成多个子字符串，结果放在一个数组里。第一个参数是分隔符，分隔符可以是字符串，也可以是正则。第二个参数可选，用于指定数组的大小
+					var colorText = "red,blue,green,yellow";
+					var colors1 = colorText.split(",");//["red","blue","green","yellow"]
+					var colors2 = colorText.split(",",2);//["red","blue"]
+					var colors3 = colorText.split(/[^\,]+/);//["", ",", ",", ",", ""]  split的正则会有浏览器的兼容性问题，慎用
+
+			localeCompare():比较两个字符串，返回值：
+								①如果字符串在字母表中应该排在字符串参数之前，返回肤质，大部分是-1，但不绝对
+								②如果字符串等于字符串参数，返回0
+								③如果字符串在字母表中排字符串参数之后，返回正数，大部分是1，但不绝对
+				var stringValue = "yellow";
+				alert(stringValue.localeCompare("brick"));//1
+				alert(stringValue.localeCompare("yellow"));//0
+				alert(stringValue.localeCompare("zoo"));//-1
+
+				因为localeCompare()的返回值按情况而定，所以最好这样写：
+					function determineOrder(value){
+						var result = stringValue.localeCompare(value);
+						if (result < 0) {
+							alert("the string 'yellow' comes before the string '" + value + "'.");
+						}else if (result > 0) {
+							alert("the string 'yellow' comes after the string '" + value + "'.");
+						}else{
+							alert("the string 'yellow' comes equal the string '" + value + "'.");
+						}
+					}
+					determineOrder("brick");
+					determineOrder("yellow");
+					determineOrder("zoo");
+
+					localeCompare()方法根据地区决定行为
+
+			fromCharCode():接收一或多个字符编码，然后转换，从本质上看，跟charCodeAt()作用相反
+				alert(String.fromCharCode(104,101,108,108,111));//"hello"
+
+			HTML方法：建议不要用，因为他们创建的标记通常无法表达语义。那我就不写了 ^_^
+
+	七.单体内置对象
+
+
+
+
+
+
+					
 
