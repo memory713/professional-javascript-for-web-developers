@@ -1,14 +1,14 @@
 // 2017/8/30   liwen
 
 
-
+0.文件加载
 	1.<script type="text/javascript" defer="defer" src="..">
 		defer:立即下载  延迟执行 只适用于外部脚本 遇到第一个HTML再执行  按顺序 同步
 		async:异步加载 要先确保两者之间不互相依赖  异步脚本一定会在load事件之前执行
 		
 	2.外部文件优势：可维护性  可缓存  适应未来
 
-一.数据类型
+一.数据类型概念
 	1.typeof   	undefined
 				boolean
 				string
