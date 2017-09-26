@@ -652,6 +652,59 @@
 			HTML方法：建议不要用，因为他们创建的标记通常无法表达语义。那我就不写了 ^_^
 
 	七.单体内置对象
+		1.global对象：全局对象//略过  跟window对象有重合  第八章详解windou对象
+			所有在全局作用域中定义的属性和方法，都是GLOBAL对象的属性。
+				uri编码方法：
+					encodeURI():用于整个URI，不会对本身属于RUI的特殊字符进行编码，不如斜杠，冒号等等
+					encodeURICompoment()：用于URI中的某一段。会对特殊字符进行编码
+
+		2.math对象
+			属性 						说明
+			Math.E 						自然对数的底数 常量e的值
+			Math.LN10					10的自然对数
+			Math.LN2 					2的自然对数
+			Math.LOG2E					以2为底e得对数
+			Math.LOG10E					以10为底e得对数
+			Math.PI 					π的值
+			Math.SQRT1_2				1/2的平方根 （2的平方根的倒数）
+			Math.SQRT2 					2的平方根
+
+			Math.min();	 
+			Math.max();
+				var max =Math.max(3,665,42,65,43,5);
+				alert(max);//665
+
+				var values = [1,2,3,4,5,6,7,8,9];
+				var max = Math.max.apply(Math, values);
+
+			舍入方法：
+				Math.ceil():向上舍入 加
+				Math.floor():向下舍入 减
+				Math.round():四舍五入
+
+			random():随机数
+				格式：值 = Math.floor(Math.random()*可能值的总数+第一个可能的值)
+
+				选择一个1~10的数值：
+				var num = Math.floor(Math.random()*10+1);
+				选择一个2~10的数值：
+				var num = Math.floor(Math.random()*9+2);
+
+				实例：从数组中随机挑选一项
+					function selectFrom(lowerValue,upperValue){
+						var choices = upperValue-lowerValue+1;
+						return Math.floor(Math.random()*choices+lowerValue);
+					}
+					var colors = ["red","green","blue","yellow","black","purple","brown"];
+					var color = colors[selectFrom(0,colors.length-1)];
+					alert(color);
+
+			Math方法还有很多，其他的比较小众，不一一列举了，详情百度。
+
+
+
+
+
 
 
 
